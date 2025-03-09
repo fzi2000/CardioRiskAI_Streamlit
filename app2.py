@@ -53,7 +53,7 @@ def get_base64_of_image(image_path):
         return base64.b64encode(image_file.read()).decode()
 
 # Convert image to base64
-img_base64 = get_base64_of_image("images/img3.jpg")
+img_base64 = get_base64_of_image("images/img4.jpg")
 # Initialize session state for page navigation
 if "page" not in st.session_state:
     st.session_state.page = "Home"
@@ -65,7 +65,7 @@ choice = st.sidebar.radio("Choose a Page", menu)
 
 if choice == "Home":
     st.session_state.page = "Home"
-    st.image("images/img3.jpg", caption="Heart Disease Prediction", use_container_width=True)
+    st.image("images/img4.jpg", caption="Heart Disease Prediction", use_container_width=True)
     st.markdown(
         f"""
         <style>
@@ -116,12 +116,7 @@ else:
 
 #Home Page
 if choice == "Home":
-    st.markdown("<div class='title'>CardioRisk AI</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Heart Disease Prediction System</div>", unsafe_allow_html=True)
-    st.markdown(
-        "<p style='font-size:24px; font-weight:bold; color:#333;'>Predicts the <b>10-year risk of CHD (Coronary Heart Disease)</b> using Machine Learning.</p>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<div class='title'> </div>", unsafe_allow_html=True)
 
 #  About Page
 elif choice == "About":
