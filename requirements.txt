@@ -1,9 +1,10 @@
 streamlit
-numpy
 pandas
+numpy
 matplotlib
-seaborn
-joblib
+plotly
+shap
+lime
 scikit-learn
 tensorflow
-keras
+joblib
