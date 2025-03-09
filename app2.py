@@ -65,7 +65,7 @@ choice = st.sidebar.radio("Choose a Page", menu)
 
 if choice == "Home":
     st.session_state.page = "Home"
-    st.image("images/img3.jpg", caption="Heart Disease Prediction", use_column_width=True)
+    st.image("images/img3.jpg", caption="Heart Disease Prediction", use_container_width=True)
     st.markdown(
         f"""
         <style>
