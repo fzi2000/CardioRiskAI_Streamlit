@@ -75,7 +75,7 @@ st.markdown("""
         }
 
         .stButton > button {
-            background-color: #f63366 !important;
+            background-color: #1f77b4 !important;
             color: white !important;
             border: none;
             border-radius: 4px;
@@ -157,37 +157,39 @@ choice = st.sidebar.radio("Choose a Page", menu)
 if choice == "Home":
     st.session_state.page = "Home"
     st.markdown(
-        f"""
-        <style>
-            .main {{
-                background: url("data:image/jpeg;base64,{img_base64}") no-repeat center center fixed;
-                background-size: cover;
-            }}
-            .block-container {{
-                background: rgba(255, 255, 255, 0);
-                border-radius: 10px;
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }}
-            .title {{
-                font-size: 55px;
-                font-weight: bold;
-                color: #333;
-                margin-bottom: 10px;
-            }}
-            .subtitle {{
-                font-size: 35px;
-                font-weight: bold;
-                color: #333;
-                margin-bottom: 20px;
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    f"""
+    <style>
+        .stApp {{
+            background: url("data:image/jpeg;base64,{img_base64}") no-repeat center center fixed;
+            background-size: cover;
+        }}
+        .block-container {{
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }}
+        .title {{
+            font-size: 55px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }}
+        .subtitle {{
+            font-size: 35px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 else:
     st.session_state.page = choice  # Update session state for navigation
     st.markdown(
