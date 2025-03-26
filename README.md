@@ -49,7 +49,7 @@ This project uses machine learning models to predict the presence of cardiovascu
 - **Matplotlib/Seaborn** for data visualization.
 
 ---
-![App Screenshot](CardioRisk AI.png) 
+![App Screenshot](CardioRisk%20AI.png) 
 ---
 ##  Installation
 1. Download the zipped file
