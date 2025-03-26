@@ -76,9 +76,17 @@ st.markdown("""
 
         .stButton > button {
             background-color: #1f77b4 !important;
-            color: white !important;
+            color: red !important;
             border: none;
-            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s ease;
+        }
+
+        .stButton > button:hover {
+            background-color: #135a96 !important;
         }
 
         .stRadio > div > label {
@@ -164,7 +172,7 @@ if choice == "Home":
             background-size: cover;
         }}
         .block-container {{
-            background-color: rgba(255, 255, 255, 0.85);
+            background: transparent !important;
             border-radius: 10px;
             text-align: center;
             display: flex;
