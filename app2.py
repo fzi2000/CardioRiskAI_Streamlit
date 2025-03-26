@@ -31,7 +31,19 @@ joblib.dump(scaler, "scaler_framingham_updated.pkl")
 # # Scale the data again
 # scaler = StandardScaler()
 # X_scaled = scaler.fit_transform(X)
-model = tf.keras.models.load_model("cnn_model.h5")
+
+# Load the CNN Model
+try:
+    model = tf.keras.models.load_model("cnn_model.h5")
+    cnn_available = True
+except Exception as e:
+    st.warning("CNN Model not available. Switching to Logistic Regression.")
+    cnn_available = False
+    # Load Logistic Regression Model (Safe Core)
+    logistic_model_path = "../model/logistic_model.pkl"  
+    logistic_model = joblib.load(logistic_model_path)
+# model = tf.keras.models.load_model("cnn_model.h5")
+
 # scaler = joblib.load("scaler_framingham.pkl")
 # Extract Expected Features from Scaler
 # Load the new scaler that was trained WITHOUT 'education'
@@ -43,6 +55,80 @@ expected_features = scaler.feature_names_in_  # Ensure correct ordering
 
 # Set Streamlit Page Config
 st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
+# Force light theme for mobile/dark mode compatibility
+st.markdown("""
+    <style>
+        /* Global background and text */
+        html, body, .stApp {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+            color: black !important;
+        }
+
+        /* Markdown content */
+        .markdown-text-container {
+            color: black !important;
+        }
+
+        /* Labels like sliders, radio buttons */
+        label, .css-1cpxqw2, .css-145kmo2 {
+            color: black !important;
+        }
+
+        /* Radio/checkbox text */
+        .st-bb, .st-b6, .st-c4, .st-ce {
+            color: black !important;
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: #f63366 !important;
+            color: white !important;
+        }
+
+        /* Slider track */
+        .stSlider > div > div {
+            background: white !important;
+        }
+
+        /* Sidebar */
+        .css-1d391kg, .css-18e3th9 {
+            background-color: #f0f2f6 !important;
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+        /* Sidebar background and text */
+        section[data-testid="stSidebar"] {
+            background-color: #f5f5f5 !important;
+            color: black !important;
+        }
+
+        section[data-testid="stSidebar"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+st.markdown("""
+    <style>
+        /* Top banner / toolbar */
+        header[data-testid="stHeader"] {
+            background-color: #f5f5f5 !important;
+        }
+        header[data-testid="stHeader"] * {
+            color: black !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # Apply Custom CSS for Local Background Image
 import base64
 import streamlit as st
@@ -53,7 +139,7 @@ def get_base64_of_image(image_path):
         return base64.b64encode(image_file.read()).decode()
 
 # Convert image to base64
-img_base64 = get_base64_of_image("images/img4.jpg")
+img_base64 = get_base64_of_image("images/img3.jpg")
 # Initialize session state for page navigation
 if "page" not in st.session_state:
     st.session_state.page = "Home"
@@ -65,7 +151,6 @@ choice = st.sidebar.radio("Choose a Page", menu)
 
 if choice == "Home":
     st.session_state.page = "Home"
-    st.image("images/img4.jpg", caption="Heart Disease Prediction", use_container_width=True)
     st.markdown(
         f"""
         <style>
@@ -116,7 +201,12 @@ else:
 
 #Home Page
 if choice == "Home":
-    st.markdown("<div class='title'> </div>", unsafe_allow_html=True)
+    st.markdown("<div class='title'>CardioRisk AI</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>Heart Disease Prediction System</div>", unsafe_allow_html=True)
+    st.markdown(
+        "<p style='font-size:24px; font-weight:bold; color:#333;'>Predicts the <b>10-year risk of CHD (Coronary Heart Disease)</b> using Machine Learning.</p>",
+        unsafe_allow_html=True
+    )
 
 #  About Page
 elif choice == "About":
@@ -312,8 +402,20 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
     if submit_button:
         risk_percentage, risk_category = calculate_framingham_risk(age, gender, totChol, sysBP, currentSmoker, diabetes, BPMeds)
         risk_value = float(risk_percentage.replace('%', '').replace('>30', '30'))
-        st.success(f"**Risk Score:** {risk_value} %")
-        st.success(f"**Risk Level:** {risk_category}")
+        st.markdown(f"""
+    <div style='padding: 10px; background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; border-radius: 4px;'>
+        <strong>Risk Score:</strong> {risk_value} %
+    </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+            <div style='padding: 10px; background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; border-radius: 4px;'>
+                <strong>Risk Level:</strong> {risk_category}
+            </div>
+        """, unsafe_allow_html=True)
+
+        # st.success(f"**Risk Score:** {risk_value} %")
+        # st.success(f"**Risk Level:** {risk_category}")
 
         #  Add Progress Bar Before SHAP Explanation
         st.subheader("Explain my risk ")
@@ -368,8 +470,23 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
             # Identify the Most Influential Feature
             shap_values_df = pd.DataFrame(shap_values.values, columns=feature_names)
             top_risk_factor = shap_values_df.abs().mean().idxmax()
-            
-            st.write(f"**Most Significant Factor:** `{top_risk_factor}`")
+            st.markdown(f"""
+                    <style>
+                        /* Fix inline code background and text */
+                        code {{
+                            background-color: #f0f0f0 !important;
+                            color: #d63384 !important;
+                            font-weight: bold;
+                        }}
+                    </style>
+
+                    <div style='padding: 10px; background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; border-radius: 4px;'>
+                        <strong>Most Significant Factor:</strong> {top_risk_factor}
+                    </div>
+                """, unsafe_allow_html=True)
+
+
+            # st.write(f"**Most Significant Factor:** `{top_risk_factor}`")
             
             # Display personalized recommendation
             recommendations = {
@@ -392,9 +509,21 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
             
             st.subheader("🩺 Personalized AI Recommendation")
             if top_risk_factor in recommendations:
-                st.success(recommendations[top_risk_factor])
+                st.markdown(f"""
+                    <div style='padding: 10px; background-color: #d1ecf1; color: #0c5460; border-left: 5px solid #17a2b8; border-radius: 4px;'>
+                        {recommendations[top_risk_factor]}
+                    </div>
+                """, unsafe_allow_html=True)
+
+                # st.success(recommendations[top_risk_factor])
             else:
-                st.success("Focus on maintaining a heart-healthy lifestyle with regular exercise and a balanced diet.")
+                st.markdown("""
+                    <div style='padding: 10px; background-color: #fff3cd; color: #856404; border-left: 5px solid #ffc107; border-radius: 4px;'>
+                        Focus on maintaining a heart-healthy lifestyle with regular exercise and a balanced diet.
+                    </div>
+                """, unsafe_allow_html=True)
+
+                # st.success("Focus on maintaining a heart-healthy lifestyle with regular exercise and a balanced diet.")
 
             
 
@@ -566,5 +695,3 @@ elif choice == "Data Insights":
         )
         st.plotly_chart(fig_smoking)
         st.markdown("</div>", unsafe_allow_html=True)
-
-    
