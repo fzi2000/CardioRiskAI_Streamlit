@@ -56,48 +56,53 @@ expected_features = scaler.feature_names_in_  # Ensure correct ordering
 # Set Streamlit Page Config
 st.set_page_config(page_title="Heart Disease Prediction", layout="wide")
 # Force light theme for mobile/dark mode compatibility
+# Force light theme & visibility across all elements
 st.markdown("""
     <style>
-        /* Global background and text */
         html, body, .stApp {
             background-color: white !important;
             color: black !important;
         }
 
-        /* Headings */
-        h1, h2, h3, h4, h5, h6 {
+        h1, h2, h3, h4, h5, h6, p, label, div, span {
             color: black !important;
         }
 
-        /* Markdown content */
-        .markdown-text-container {
-            color: black !important;
+        code {
+            background-color: #f0f0f0 !important;
+            color: #d63384 !important;
+            font-weight: bold;
         }
 
-        /* Labels like sliders, radio buttons */
-        label, .css-1cpxqw2, .css-145kmo2 {
-            color: black !important;
-        }
-
-        /* Radio/checkbox text */
-        .st-bb, .st-b6, .st-c4, .st-ce {
-            color: black !important;
-        }
-
-        /* Buttons */
-        .stButton>button {
+        .stButton > button {
             background-color: #f63366 !important;
             color: white !important;
+            border: none;
+            border-radius: 4px;
         }
 
-        /* Slider track */
+        .stRadio > div > label {
+            color: black !important;
+        }
+
         .stSlider > div > div {
             background: white !important;
         }
 
-        /* Sidebar */
-        .css-1d391kg, .css-18e3th9 {
-            background-color: #f0f2f6 !important;
+        section[data-testid="stSidebar"] {
+            background-color: #f5f5f5 !important;
+            color: black !important;
+        }
+
+        section[data-testid="stSidebar"] * {
+            color: black !important;
+        }
+
+        header[data-testid="stHeader"] {
+            background-color: #f5f5f5 !important;
+        }
+
+        header[data-testid="stHeader"] * {
             color: black !important;
         }
     </style>
@@ -139,7 +144,7 @@ def get_base64_of_image(image_path):
         return base64.b64encode(image_file.read()).decode()
 
 # Convert image to base64
-img_base64 = get_base64_of_image("images/img4.jpg")
+img_base64 = get_base64_of_image("images/img3.jpg")
 # Initialize session state for page navigation
 if "page" not in st.session_state:
     st.session_state.page = "Home"
