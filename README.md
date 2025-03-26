@@ -49,7 +49,8 @@ This project uses machine learning models to predict the presence of cardiovascu
 - **Matplotlib/Seaborn** for data visualization.
 
 ---
-
+![App Screenshot](CardioRisk AI.png) 
+---
 ##  Installation
 1. Download the zipped file
 2. Extract the folder
@@ -63,7 +64,4 @@ Clone the repository:
    ```bash
    git clone https://github.com/your-username/heart-disease-prediction.git
    cd heart-disease-prediction
-
-
-
-   
+---
