@@ -139,7 +139,7 @@ def get_base64_of_image(image_path):
         return base64.b64encode(image_file.read()).decode()
 
 # Convert image to base64
-img_base64 = get_base64_of_image("images/img3.jpg")
+img_base64 = get_base64_of_image("images/img4.jpg")
 # Initialize session state for page navigation
 if "page" not in st.session_state:
     st.session_state.page = "Home"
