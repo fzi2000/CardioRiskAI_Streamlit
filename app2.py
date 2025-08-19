@@ -683,7 +683,7 @@ elif choice == "ChatBot":
     # Load Gemini Model
     model = genai.GenerativeModel("gemini-1.5-flash")
     st.title("💬 AI Health Assistant (Gemini)")
-    st.write("Ask questions about your cardiovascular health, risk factors, or lifestyle advice.")
+    st.write("Ask questions about cardiovascular health, risk factors, or lifestyle advice.")
 
     # Maintain chat history
     if "messages" not in st.session_state:
@@ -866,4 +866,5 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
