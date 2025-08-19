@@ -663,7 +663,10 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
         pdf.multi_cell(200, 10, txt=f"Diagnosis: {diagnosis}")
         pdf.multi_cell(200, 10, txt=f"Prescription: {prescription}")
         # Convert PDF to bytes
-        pdf_bytes = pdf.output(dest="S").encode("latin-1")
+        # pdf_bytes = pdf.output(dest="S").encode("latin-1")
+        pdf_bytes = pdf.output(dest="S")  # For fpdf2, this is already bytes
+        if isinstance(pdf_bytes, str):    # For older fpdf versions
+            pdf_bytes = pdf_bytes.encode("latin-1")
 
         # Download button (no refresh)
         b64 = base64.b64encode(pdf_bytes).decode()
@@ -866,5 +869,6 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
