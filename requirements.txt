@@ -9,3 +9,4 @@ scikit-learn
 tensorflow
 joblib
 google-generativeai
+fpdf 
