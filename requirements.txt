@@ -10,3 +10,4 @@ tensorflow
 joblib
 google-generativeai
 fpdf 
+fpdf2
