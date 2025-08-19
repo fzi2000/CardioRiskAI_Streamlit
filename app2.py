@@ -20,14 +20,12 @@ heart_data = pd.read_csv('data/framingham.csv')
 
 # Drop 'education' column before training the scaler
 X = heart_data.drop(columns=["TenYearCHD", "education"])  # Exclude target & 'education'
-
 # Fit a new scaler
 scaler = StandardScaler()
 scaler.fit(X)
 
 # Save the updated scaler
 joblib.dump(scaler, "scaler_framingham_updated.pkl")
-
 # # Scale the data again
 # scaler = StandardScaler()
 # X_scaled = scaler.fit_transform(X)
@@ -48,7 +46,6 @@ except Exception as e:
 # Extract Expected Features from Scaler
 # Load the new scaler that was trained WITHOUT 'education'
 scaler = joblib.load("scaler_framingham_updated.pkl")
-
 # Extract expected features
 expected_features = scaler.feature_names_in_  # Ensure correct ordering
 
@@ -75,8 +72,8 @@ st.markdown("""
         }
 
         .stButton > button {
-            background-color: #1f77b4 !important;
-            color: red !important;
+            background-color: #1f77b4;
+            color: white !important;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 6px;
@@ -159,8 +156,15 @@ if "page" not in st.session_state:
 
 # Sidebar Navigation
 st.sidebar.title("Navigation")
-menu = ["Home", "Risk Prediction", "Data Insights","About"]
+menu = ["Home", "Risk Prediction", "Data Insights","ChatBot","About"]
 choice = st.sidebar.radio("Choose a Page", menu)
+
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'guest' not in st.session_state:
+    st.session_state.guest = False
+if 'username' not in st.session_state:
+    st.session_state.username = None 
 
 if choice == "Home":
     st.session_state.page = "Home"
@@ -226,6 +230,7 @@ if choice == "Home":
 #  About Page
 elif choice == "About":
     st.title("About This Project")
+    st.image("CardioRisk AI.png")
     st.write("""
     ### **CardioRisk AI- Heart Disease Risk Prediction System**
     This application leverages advanced **Machine Learning (ML) algorithms** to estimate an individual's **10-year risk of developing Coronary Heart Disease (CHD)**. By analyzing key health indicators, the system provides a risk assessment that can aid in early detection and preventive care.
@@ -249,7 +254,33 @@ elif choice == "About":
 
 # Risk Prediction Page
 elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
-    st.title("Predict Your 10-Year CHD Risk")
+    st.title("Predict Your 10-Year Cardiovascular Disease Risk")
+    st.markdown("""
+        <style>
+        div[data-testid="stForm"] .stButton > button {
+        background-color: #008CBA; /* your blue */
+        color: white !important;
+        border-radius: 12px !important;
+        border: 1px solid #008CBA !important;
+        padding: 10px 24px !important;
+        cursor: pointer !important;
+        font-size: 16px !important;
+        transition-duration: 0.4s !important;
+    }
+
+    div[data-testid="stForm"] .stButton > button:hover {
+        background-color: #135a96 !important; /* darker blue */
+        color: white !important;
+    }
+
+    /* Extra specificity */
+    section[data-testid="stApp"] div[data-testid="stForm"] .stButton > button {
+        background-color: #008CBA !important;
+        color: white !important;
+    }
+
+        </style>
+        """, unsafe_allow_html=True)
 
     with st.form(key="risk_form"):
         age = st.slider("Age", 20, 90, 50)
@@ -431,7 +462,20 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
 
         # st.success(f"**Risk Score:** {risk_value} %")
         # st.success(f"**Risk Level:** {risk_category}")
+        # Risk Comparison Chart
+        avg_risk = 15  # Example: replace with dataset average if available
+        patient_risk = risk_value
 
+        df = pd.DataFrame({
+            "Category": ["Average Population", "Patient"],
+            "Risk %": [avg_risk, patient_risk]
+        })
+
+        fig = px.bar(df, x="Category", y="Risk %", color="Category",
+                    color_discrete_map={"Average Population": "lightblue", "Patient": "red"},
+                    title="Risk Comparison")
+        fig.update_layout(yaxis=dict(range=[0, 100]))
+        st.plotly_chart(fig)
         #  Add Progress Bar Before SHAP Explanation
         st.subheader("Explain my risk ")
         progress_bar = st.progress(0)
@@ -505,21 +549,21 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
             
             # Display personalized recommendation
             recommendations = {
-                "cigsPerDay": "🚭 **Reduce smoking**: Consider a smoking cessation program or nicotine replacement therapy.",
-                "currentSmoker": "🚭 **Quit smoking**: Seek support from a healthcare provider to stop smoking permanently.",
-                "totChol": "🥗 **Adopt a heart-healthy diet**: Reduce saturated fats, eat more fruits and vegetables.",
-                "sysBP": "💊 **Monitor blood pressure**: Reduce salt intake, exercise regularly, and consider medication if necessary.",
-                "diaBP": "💊 **Control diastolic pressure**: Lower stress, avoid caffeine, and maintain a balanced diet.",
-                "BMI": "⚖️ **Maintain a healthy weight**: Follow a balanced diet and engage in regular physical activity.",
-                "glucose": "🍬 **Monitor blood sugar levels**: Reduce sugar intake, exercise, and consider medication if diabetic.",
-                "diabetes": "🍏 **Manage diabetes**: Control carbohydrate intake and consult a doctor for diabetes management.",
-                "prevalentHyp": "💊 **Control hypertension**: Follow a low-sodium diet and engage in moderate exercise.",
-                "prevalentStroke": "⚠️ **Stroke prevention**: Avoid smoking, control cholesterol, and maintain normal blood pressure.",
-                "BPMeds": "💊 **Consult your doctor about blood pressure medications**: Ensure correct dosage and adherence.",
-                "age": "🏥 **Regular health check-ups**: Monitor cardiovascular health with routine medical exams.",
-                "male": "⚠️ **Be aware of male-specific heart risks**: Men have a higher risk of CHD; focus on preventive care.",
-                "education": "📖 **Stay informed about heart health**: Knowledge helps in making proactive health choices.",
-                "heartRate": "💓 **Maintain a normal heart rate**: Regular exercise and stress management are beneficial."
+                "cigsPerDay": "🚭 Reduce smoking: Consider a smoking cessation program or nicotine replacement therapy.",
+                "currentSmoker": "🚭 Quit smoking: Seek support from a healthcare provider to stop smoking permanently.",
+                "totChol": "🥗 Adopt a heart-healthy diet: Reduce saturated fats, eat more fruits and vegetables.",
+                "sysBP": "💊 Monitor blood pressure: Reduce salt intake, exercise regularly, and consider medication if necessary.",
+                "diaBP": "💊 Control diastolic pressure: Lower stress, avoid caffeine, and maintain a balanced diet.",
+                "BMI": "⚖️ Maintain a healthy weight: Follow a balanced diet and engage in regular physical activity.",
+                "glucose": "🍬 Monitor blood sugar levels: Reduce sugar intake, exercise, and consider medication if diabetic.",
+                "diabetes": "🍏 Manage diabetes: Control carbohydrate intake and consult a doctor for diabetes management.",
+                "prevalentHyp": "💊 Control hypertension: Follow a low-sodium diet and engage in moderate exercise.",
+                "prevalentStroke": "⚠️ Stroke prevention: Avoid smoking, control cholesterol, and maintain normal blood pressure.",
+                "BPMeds": "💊 Consult your doctor about blood pressure medications: Ensure correct dosage and adherence.",
+                "age": "🏥 Regular health check-ups: Monitor cardiovascular health with routine medical exams.",
+                "male": "⚠️ Be aware of male-specific heart risks: Men have a higher risk of CHD; focus on preventive care.",
+                "education": "📖 Stay informed about heart health: Knowledge helps in making proactive health choices.",
+                "heartRate": "💓 Maintain a normal heart rate: Regular exercise and stress management are beneficial."
             }
             
             st.subheader("🩺 Personalized AI Recommendation")
@@ -588,6 +632,116 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
             st.write("👨‍👩‍👧‍👦 **Know Your Family History:** Understanding your family's health history can help you take preventive measures.")
             st.write("🍎 **Make Heart-Healthy Choices:** Choose a balanced diet rich in fruits, vegetables, and whole grains to support heart health.")
             st.write("💤 **Get Enough Sleep:** Quality sleep is essential for overall health, including heart health. Aim for 7-8 hours of sleep per night.")
+
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ") 
+    st.write(" ")
+    st.write(" ")   
+    st.subheader("📄 Export Patient Report")
+    from fpdf import FPDF
+            # Form for user details
+    with st.form("export_form"):
+        name = st.text_input("Name")
+        age = st.number_input("Age", min_value=15, max_value=100)
+        diagnosis = st.text_area("Diagnosis")
+        prescription = st.text_area("Prescription")
+        export_btn = st.form_submit_button("Export to PDF")
+
+    
+    # Added a success message for visual confirmation.
+    if export_btn:
+        # PDF generation logic
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=14)
+        pdf.cell(200, 10, txt="CardioRisk AI Patient Report", ln=True, align="C")
+        pdf.ln(10)
+        pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
+        pdf.cell(200, 10, txt=f"Age: {age}", ln=True)
+        pdf.multi_cell(200, 10, txt=f"Diagnosis: {diagnosis}")
+        pdf.multi_cell(200, 10, txt=f"Prescription: {prescription}")
+        # Convert PDF to bytes
+        pdf_bytes = pdf.output(dest="S").encode("latin-1")
+
+        # Download button (no refresh)
+        b64 = base64.b64encode(pdf_bytes).decode()
+        href = f'<a href="data:application/pdf;base64,{b64}" download="Patient_Report.pdf">📥 Click here to download your PDF</a>'
+        
+        # Add a success message to confirm the action
+        st.success("PDF report generated successfully!")
+        st.markdown(href, unsafe_allow_html=True)
+
+elif choice == "ChatBot":
+    import streamlit as st
+    import google.generativeai as genai
+
+    # Configure API
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+    # Load Gemini Model
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    st.title("💬 AI Health Assistant (Gemini)")
+    st.write("Ask questions about your cardiovascular health, risk factors, or lifestyle advice.")
+
+    # Maintain chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Display chat history
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
+
+    # Input box
+    if prompt := st.chat_input("Ask Gemini about heart health..."):
+        # Add user msg
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("user").write(prompt)
+
+        # Gemini response
+        response = model.generate_content(prompt)
+        reply = response.text
+
+        # Add assistant msg
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.chat_message("assistant").write(reply)
+
+#     import streamlit as st
+#     import openai
+#     from openai import OpenAI
+
+#     st.set_page_config(page_title="Chatbot", layout="wide")
+
+#     # API Key from secrets
+#     openai.api_key = st.secrets["OPENAI_API_KEY"]
+
+#     # Initialize chat history
+#     if "messages" not in st.session_state:
+#         st.session_state.messages = []
+
+#     st.title("💬 Chatbot")
+
+#     # Display chat history
+#     for msg in st.session_state.messages:
+#         with st.chat_message(msg["role"]):
+#             st.markdown(msg["content"])
+
+#     # Chat input
+#     if prompt := st.chat_input("Type your message..."):
+#         st.session_state.messages.append({"role": "user", "content": prompt})
+
+#         with st.chat_message("assistant"):
+#             with st.spinner("Thinking..."):
+#                 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # Uses Streamlit secrets
+#                 response = client.chat.completions.create(
+#                     model="gpt-3.5-turbo",
+#                     messages=st.session_state.messages
+#                 )
+#                 reply = response.choices[0].message["content"]
+#                 st.markdown(reply)
+
+#         st.session_state.messages.append({"role": "assistant", "content": reply})
 
 
 # Data Insights Page
@@ -710,3 +864,6 @@ elif choice == "Data Insights":
         )
         st.plotly_chart(fig_smoking)
         st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.image("heart_infographi.jpg")
+
