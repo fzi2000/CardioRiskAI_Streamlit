@@ -703,7 +703,8 @@ elif choice == "ChatBot":
         st.chat_message("user").write(prompt)
 
         # Gemini response
-        response = model.generate_content(prompt)
+        # response = model.generate_content(prompt)
+        response = model.generate_content([prompt])
         reply = response.text
 
         # Add assistant msg
@@ -869,6 +870,7 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
 
