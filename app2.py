@@ -684,7 +684,7 @@ elif choice == "ChatBot":
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
     # Load Gemini Model
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-2.5-flash")
     # gemini-1.5-flash
     st.title("💬 AI Health Assistant (Gemini)")
     st.write("Ask questions about cardiovascular health, risk factors, or lifestyle advice.")
@@ -871,6 +871,7 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
 
