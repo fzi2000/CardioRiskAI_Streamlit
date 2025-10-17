@@ -1,4 +1,4 @@
-# Cardiovascular Disease Prediction Using Machine Learning
+# CardioRisk AI- Cardiovascular Disease Prediction Using Machine Learning
 
 This project uses machine learning models to predict the presence of cardiovascular disease based on patient data. The dataset includes attributes such as age, blood pressure, cholesterol levels, and more. The project incorporates techniques like feature selection, model evaluation, and explainable AI (SHAP) for insights. It focuses on stratifying patients into different risk levels and explaining the risk using SHAP graphs for interpretabiltiy.
 
