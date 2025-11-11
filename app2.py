@@ -747,41 +747,7 @@ elif choice == "ChatBot":
     #     st.session_state.messages.append({"role": "assistant", "content": reply})
     #     st.chat_message("assistant").write(reply)
 
-#     import streamlit as st
-#     import openai
-#     from openai import OpenAI
 
-#     st.set_page_config(page_title="Chatbot", layout="wide")
-
-#     # API Key from secrets
-#     openai.api_key = st.secrets["OPENAI_API_KEY"]
-
-#     # Initialize chat history
-#     if "messages" not in st.session_state:
-#         st.session_state.messages = []
-
-#     st.title("💬 Chatbot")
-
-#     # Display chat history
-#     for msg in st.session_state.messages:
-#         with st.chat_message(msg["role"]):
-#             st.markdown(msg["content"])
-
-#     # Chat input
-#     if prompt := st.chat_input("Type your message..."):
-#         st.session_state.messages.append({"role": "user", "content": prompt})
-
-#         with st.chat_message("assistant"):
-#             with st.spinner("Thinking..."):
-#                 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # Uses Streamlit secrets
-#                 response = client.chat.completions.create(
-#                     model="gpt-3.5-turbo",
-#                     messages=st.session_state.messages
-#                 )
-#                 reply = response.choices[0].message["content"]
-#                 st.markdown(reply)
-
-#         st.session_state.messages.append({"role": "assistant", "content": reply})
 
 
 # Data Insights Page
@@ -906,6 +872,7 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
 
