@@ -677,40 +677,75 @@ elif choice == "Risk Prediction" or st.session_state.page == "Risk Prediction":
         st.markdown(href, unsafe_allow_html=True)
 
 elif choice == "ChatBot":
+    import os
     import streamlit as st
-    import google.generativeai as genai
+    from groq import Groq
+    from dotenv import load_dotenv
+    
+    # Load environment variables if using .env
+    load_dotenv()
+    
+    # Initialize Groq client
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    
+    st.title("💬 CardioRisk AI Chatbot")
+    st.write("Ask about cardiovascular health, risk factors, or AI insights!")
+    
+    # Input field
+    user_input = st.text_input("You:", placeholder="Type your question here...")
+    
+    if st.button("Send"):
+        if not user_input.strip():
+            st.warning("Please enter a question.")
+        else:
+            with st.spinner("Thinking..."):
+                try:
+                    response = client.chat.completions.create(
+                        model="llama-3.1-8b-instant",  # Free-tier supported
+                        messages=[
+                            {"role": "system", "content": "You are a helpful AI assistant specialized in heart health."},
+                            {"role": "user", "content": user_input}
+                        ],
+                    )
+                    answer = response.choices[0].message.content
+                    st.success("AI Response:")
+                    st.write(answer)
+                except Exception as e:
+                    st.error(f"Error: {e}")
+    # import streamlit as st
+    # import google.generativeai as genai
 
-    # Configure API
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    # # Configure API
+    # genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-    # Load Gemini Model
-    model = genai.GenerativeModel("gemini-2.5-flash")
-    # gemini-1.5-flash
-    st.title("💬 AI Health Assistant (Gemini)")
-    st.write("Ask questions about cardiovascular health, risk factors, or lifestyle advice.")
+    # # Load Gemini Model
+    # model = genai.GenerativeModel("gemini-2.5-flash")
+    # # gemini-1.5-flash
+    # st.title("💬 AI Health Assistant (Gemini)")
+    # st.write("Ask questions about cardiovascular health, risk factors, or lifestyle advice.")
 
-    # Maintain chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    # # Maintain chat history
+    # if "messages" not in st.session_state:
+    #     st.session_state.messages = []
 
-    # Display chat history
-    for msg in st.session_state.messages:
-        st.chat_message(msg["role"]).write(msg["content"])
+    # # Display chat history
+    # for msg in st.session_state.messages:
+    #     st.chat_message(msg["role"]).write(msg["content"])
 
-    # Input box
-    if prompt := st.chat_input("Ask Gemini about heart health..."):
-        # Add user msg
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.chat_message("user").write(prompt)
+    # # Input box
+    # if prompt := st.chat_input("Ask Gemini about heart health..."):
+    #     # Add user msg
+    #     st.session_state.messages.append({"role": "user", "content": prompt})
+    #     st.chat_message("user").write(prompt)
 
-        # Gemini response
-        response = model.generate_content(prompt)
-        # response = model.generate_content([prompt])
-        reply = response.text.strip()
+    #     # Gemini response
+    #     response = model.generate_content(prompt)
+    #     # response = model.generate_content([prompt])
+    #     reply = response.text.strip()
 
-        # Add assistant msg
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-        st.chat_message("assistant").write(reply)
+    #     # Add assistant msg
+    #     st.session_state.messages.append({"role": "assistant", "content": reply})
+    #     st.chat_message("assistant").write(reply)
 
 #     import streamlit as st
 #     import openai
@@ -871,6 +906,7 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
 
