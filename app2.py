@@ -35,10 +35,11 @@ try:
     model = tf.keras.models.load_model("cnn_model.h5")
     cnn_available = True
 except Exception as e:
-    st.warning("CNN Model not available. Switching to Logistic Regression.")
+    st.warning("Switching to Logistic Regression.")
     cnn_available = False
     # Load Logistic Regression Model (Safe Core)
-    logistic_model_path = "../model/logistic_model.pkl"  
+    # logistic_model_path = "../model/logistic_model.pkl"  
+    logistic_model_path = "fnn_model.h5"  
     logistic_model = joblib.load(logistic_model_path)
 # model = tf.keras.models.load_model("cnn_model.h5")
 
@@ -872,6 +873,7 @@ elif choice == "Data Insights":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.image("heart_infographi.jpg")
+
 
 
 
